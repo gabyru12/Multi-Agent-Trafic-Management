@@ -135,42 +135,6 @@ Modify parameters in the script files:
 - Car spawn rate: `SPAWN_TIMER = 0.025` (seconds)
 - Number of cars: `NUM_CARS = 200`
 
-## Usage Examples
-
-### Running a Single Simulation
-```python
-from simulation import run_simulation
-
-# Run with default parameters
-asyncio.run(run_simulation())
-```
-
-### Configuring Network Parameters
-```python
-from network import Network
-
-network = Network()
-network.create_network(
-    grid_size=3,      # 3x3 grid
-    n_lanes=2,        # 2 lanes per road
-    road_length=200,  # pixels
-    capacity=25       # vehicles per road
-)
-```
-
-### Analyzing Results
-```python
-import json
-
-# Load simulation results
-with open('simulation_results/sim_travel0.1_capacity0.9_cyclic_adaptiveGreenTrue_changedNetwork.json', 'r') as f:
-    data = json.load(f)
-
-# Extract metrics
-travel_times = [car['total_time'] for car in data.values() if isinstance(car, dict) and 'total_time' in car]
-avg_travel_time = sum(travel_times) / len(travel_times)
-```
-
 ## Key Components
 
 ### Traffic Light Agent
