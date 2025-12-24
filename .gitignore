@@ -1,0 +1,4 @@
+__pycache__/
+server.db
+simulation_errors.txt
+simulation_output.txt

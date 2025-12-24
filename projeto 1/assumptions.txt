@@ -1,0 +1,7 @@
+assumptions:
+todos os carros têm combustivel para chegar onde querem
+nao posemos fuel pq 1 fuel = 1 distance (carro n gasta fuel quando tá parado)
+carros n têm aceleração
+ruas ligadas a um spawn node / end node n podem ter ruas fechadas
+cada rua fechada vai ficar o mesmo tempo fechada
+toda rua tem a mesma capacidade total

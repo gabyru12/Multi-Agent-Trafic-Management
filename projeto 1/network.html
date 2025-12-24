@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module network</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">network</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cuser%5Conedrive%5Cdocumentos%5Ctraffic%5Cnetwork.py">c:\users\user\onedrive\documentos\traffic\network.py</a></td></tr></table>
+    <p><span class="code"><a href="#Network">Network</a>&nbsp;model&nbsp;for&nbsp;the&nbsp;multi-agent&nbsp;traffic&nbsp;simulation.<br>
+&nbsp;<br>
+This&nbsp;module&nbsp;defines&nbsp;the&nbsp;basic&nbsp;infrastructure&nbsp;of&nbsp;the&nbsp;traffic&nbsp;network:<br>
+&nbsp;&nbsp;-&nbsp;<a href="#Network">Network</a>:&nbsp;container&nbsp;for&nbsp;nodes,&nbsp;roads,&nbsp;and&nbsp;lanes,&nbsp;and&nbsp;utilities&nbsp;to&nbsp;build<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;grid&nbsp;and&nbsp;compute&nbsp;routes.<br>
+&nbsp;&nbsp;-&nbsp;<a href="#Node">Node</a>:&nbsp;intersection&nbsp;or&nbsp;spawn&nbsp;point&nbsp;in&nbsp;the&nbsp;grid.<br>
+&nbsp;&nbsp;-&nbsp;<a href="#Road">Road</a>:&nbsp;directed&nbsp;connection&nbsp;between&nbsp;two&nbsp;nodes,&nbsp;containing&nbsp;one&nbsp;or&nbsp;more&nbsp;lanes.<br>
+&nbsp;&nbsp;-&nbsp;<a href="#Lane">Lane</a>:&nbsp;atomic&nbsp;unit&nbsp;for&nbsp;vehicle&nbsp;movement,&nbsp;with&nbsp;inflow&nbsp;and&nbsp;outflow&nbsp;connections.<br>
+&nbsp;<br>
+It&nbsp;also&nbsp;provides:<br>
+&nbsp;&nbsp;-&nbsp;Dijkstra-based&nbsp;shortest&nbsp;path&nbsp;computation&nbsp;on&nbsp;lanes.<br>
+&nbsp;&nbsp;-&nbsp;Yen's&nbsp;K-shortest&nbsp;loopless&nbsp;path&nbsp;algorithm&nbsp;on&nbsp;lanes.</span></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="scipy.spatial.distance.html">scipy.spatial.distance</a><br>
+</td><td class="multicolumn"><a href="heapq.html">heapq</a><br>
+</td><td class="multicolumn"><a href="random.html">random</a><br>
+</td><td class="multicolumn"></td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor index-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Classes</strong></td></tr>
+    
+<tr><td class="decor index-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl>
+<dt class="heading-text"><a href="builtins.html#object">builtins.object</a>
+</dt><dd>
+<dl>
+<dt class="heading-text"><a href="network.html#Lane">Lane</a>
+</dt><dt class="heading-text"><a href="network.html#Network">Network</a>
+</dt><dt class="heading-text"><a href="network.html#Node">Node</a>
+</dt><dt class="heading-text"><a href="network.html#Road">Road</a>
+</dt></dl>
+</dd>
+</dl>
+ <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="Lane">class <strong>Lane</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#Lane">Lane</a>(ID:&nbsp;int,&nbsp;UID:&nbsp;int,&nbsp;road:&nbsp;'<a href="#Road">Road</a>')<br>
+&nbsp;<br>
+Single&nbsp;lane&nbsp;on&nbsp;a&nbsp;<a href="#Road">Road</a>.<br>
+&nbsp;<br>
+Lanes&nbsp;are&nbsp;the&nbsp;fundamental&nbsp;unit&nbsp;for&nbsp;vehicle&nbsp;movement&nbsp;and&nbsp;routing.&nbsp;Each&nbsp;lane<br>
+has&nbsp;inflow&nbsp;and&nbsp;outflow&nbsp;connections&nbsp;to&nbsp;other&nbsp;lanes,&nbsp;forming&nbsp;a&nbsp;lane-level<br>
+graph&nbsp;used&nbsp;by&nbsp;the&nbsp;routing&nbsp;algorithms.<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+ID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Local&nbsp;lane&nbsp;index&nbsp;within&nbsp;its&nbsp;road.<br>
+UID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Global&nbsp;unique&nbsp;identifier&nbsp;across&nbsp;the&nbsp;entire&nbsp;network.<br>
+road&nbsp;:&nbsp;<a href="#Road">Road</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Parent&nbsp;road.<br>
+length&nbsp;:&nbsp;int&nbsp;or&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Length&nbsp;of&nbsp;the&nbsp;lane&nbsp;(same&nbsp;as&nbsp;road&nbsp;length).<br>
+parallelLanes&nbsp;:&nbsp;list[<a href="#Lane">Lane</a>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Other&nbsp;lanes&nbsp;in&nbsp;the&nbsp;same&nbsp;road.<br>
+vehicles&nbsp;:&nbsp;collections.deque<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Queue&nbsp;of&nbsp;vehicles&nbsp;currently&nbsp;on&nbsp;this&nbsp;lane&nbsp;(if&nbsp;used).<br>
+inFlowLanes&nbsp;:&nbsp;list[<a href="#Lane">Lane</a>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Lanes&nbsp;from&nbsp;which&nbsp;a&nbsp;vehicle&nbsp;can&nbsp;enter&nbsp;this&nbsp;lane.<br>
+outFlowLanes&nbsp;:&nbsp;list[<a href="#Lane">Lane</a>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Lanes&nbsp;a&nbsp;vehicle&nbsp;can&nbsp;move&nbsp;to&nbsp;from&nbsp;this&nbsp;lane.<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt><a name="Lane-__init__"><strong>__init__</strong></a>(self, ID: int, UID: int, road: 'Road')</dt><dd><span class="code">Initialize&nbsp;a&nbsp;<a href="#Lane">Lane</a>.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+ID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Local&nbsp;lane&nbsp;index&nbsp;in&nbsp;the&nbsp;parent&nbsp;road.<br>
+UID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Globally&nbsp;unique&nbsp;lane&nbsp;identifier.<br>
+road&nbsp;:&nbsp;<a href="#Road">Road</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Reference&nbsp;to&nbsp;the&nbsp;parent&nbsp;road.</span></dd></dl>
+
+<dl><dt><a name="Lane-init_properties"><strong>init_properties</strong></a>(self)</dt><dd><span class="code">Initialize&nbsp;the&nbsp;list&nbsp;of&nbsp;parallel&nbsp;lanes&nbsp;within&nbsp;the&nbsp;same&nbsp;road.<br>
+&nbsp;<br>
+This&nbsp;collects&nbsp;all&nbsp;other&nbsp;lanes&nbsp;of&nbsp;the&nbsp;parent&nbsp;road&nbsp;and&nbsp;stores&nbsp;them<br>
+in&nbsp;`parallelLanes`.&nbsp;It&nbsp;is&nbsp;not&nbsp;strictly&nbsp;required&nbsp;for&nbsp;the&nbsp;routing<br>
+logic&nbsp;but&nbsp;can&nbsp;be&nbsp;useful&nbsp;for&nbsp;lane-changing&nbsp;models.</span></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+</td></tr></table> <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="Network">class <strong>Network</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code">Representation&nbsp;of&nbsp;the&nbsp;entire&nbsp;road&nbsp;network.<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+nodes&nbsp;:&nbsp;dict[int,&nbsp;<a href="#Node">Node</a>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Mapping&nbsp;from&nbsp;node&nbsp;ID&nbsp;to&nbsp;<a href="#Node">Node</a>&nbsp;instance.<br>
+roads&nbsp;:&nbsp;dict[int,&nbsp;<a href="#Road">Road</a>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Mapping&nbsp;from&nbsp;road&nbsp;ID&nbsp;to&nbsp;<a href="#Road">Road</a>&nbsp;instance.<br>
+lanes&nbsp;:&nbsp;dict[int,&nbsp;<a href="#Lane">Lane</a>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Mapping&nbsp;from&nbsp;lane&nbsp;UID&nbsp;to&nbsp;<a href="#Lane">Lane</a>&nbsp;instance.<br>
+next_lane_uid&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Global&nbsp;counter&nbsp;used&nbsp;to&nbsp;assign&nbsp;unique&nbsp;lane&nbsp;UIDs.<br>
+spawn_nodes&nbsp;:&nbsp;list[<a href="#Node">Node</a>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;List&nbsp;of&nbsp;spawn&nbsp;nodes&nbsp;around&nbsp;the&nbsp;border&nbsp;of&nbsp;the&nbsp;grid.<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt><a name="Network-__init__"><strong>__init__</strong></a>(self)</dt><dd><span class="code">Initialize&nbsp;an&nbsp;empty&nbsp;network&nbsp;with&nbsp;no&nbsp;nodes,&nbsp;roads&nbsp;or&nbsp;lanes.</span></dd></dl>
+
+<dl><dt><a name="Network-create_network"><strong>create_network</strong></a>(self, grid_size, lane_count, spacing_between_nodes, road_capacity_for_road)</dt><dd><span class="code">Create&nbsp;a&nbsp;grid-like&nbsp;road&nbsp;network&nbsp;and&nbsp;corresponding&nbsp;spawn&nbsp;nodes.<br>
+&nbsp;<br>
+The&nbsp;network&nbsp;is&nbsp;created&nbsp;as&nbsp;a&nbsp;grid&nbsp;of&nbsp;intersections&nbsp;(traffic&nbsp;light&nbsp;nodes)<br>
+connected&nbsp;by&nbsp;bidirectional&nbsp;roads.&nbsp;Around&nbsp;the&nbsp;border&nbsp;of&nbsp;the&nbsp;grid,&nbsp;extra<br>
+spawn&nbsp;nodes&nbsp;are&nbsp;added&nbsp;and&nbsp;connected&nbsp;to&nbsp;the&nbsp;border&nbsp;intersections,&nbsp;which<br>
+serve&nbsp;as&nbsp;entry/exit&nbsp;points&nbsp;for&nbsp;vehicles.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+grid_size&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;nodes&nbsp;per&nbsp;side&nbsp;in&nbsp;the&nbsp;grid&nbsp;(grid_size&nbsp;x&nbsp;grid_size).<br>
+lane_count&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;lanes&nbsp;per&nbsp;road&nbsp;(per&nbsp;direction).<br>
+spacing_between_nodes&nbsp;:&nbsp;int&nbsp;or&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Distance&nbsp;between&nbsp;consecutive&nbsp;grid&nbsp;nodes&nbsp;(used&nbsp;for&nbsp;positioning).<br>
+road_capacity_for_road&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Logical&nbsp;capacity/length&nbsp;of&nbsp;each&nbsp;road&nbsp;(used&nbsp;as&nbsp;lane&nbsp;length).</span></dd></dl>
+
+<dl><dt><a name="Network-generate_route"><strong>generate_route</strong></a>(self, start_road_ID: int, start_lane_UID: int, end_node_ID: int)</dt><dd><span class="code">Run&nbsp;Dijkstra's&nbsp;shortest-path&nbsp;algorithm&nbsp;on&nbsp;lanes.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+start_road_ID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;road&nbsp;where&nbsp;the&nbsp;vehicle&nbsp;currently&nbsp;is.<br>
+start_lane_UID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;UID&nbsp;of&nbsp;the&nbsp;lane&nbsp;where&nbsp;the&nbsp;vehicle&nbsp;currently&nbsp;is.<br>
+end_node_ID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;target&nbsp;node&nbsp;to&nbsp;reach.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+tuple<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(path,&nbsp;path_cost)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;:&nbsp;collections.deque<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Deque&nbsp;of&nbsp;(road_id,&nbsp;lane_uid)&nbsp;tuples&nbsp;describing&nbsp;the&nbsp;lane-by-lane&nbsp;route.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;no&nbsp;route&nbsp;exists,&nbsp;returns&nbsp;an&nbsp;empty&nbsp;deque.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path_cost&nbsp;:&nbsp;float&nbsp;or&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total&nbsp;cost&nbsp;(length)&nbsp;of&nbsp;the&nbsp;path,&nbsp;or&nbsp;None&nbsp;if&nbsp;no&nbsp;path&nbsp;is&nbsp;found.</span></dd></dl>
+
+<dl><dt><a name="Network-make_lane_connections"><strong>make_lane_connections</strong></a>(self)</dt><dd><span class="code">Build&nbsp;per-lane&nbsp;inflow&nbsp;and&nbsp;outflow&nbsp;connections&nbsp;based&nbsp;on&nbsp;road&nbsp;directions.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;populates&nbsp;for&nbsp;each&nbsp;lane:<br>
+&nbsp;&nbsp;-&nbsp;inFlowLanes:&nbsp;lanes&nbsp;from&nbsp;which&nbsp;vehicles&nbsp;can&nbsp;enter&nbsp;this&nbsp;lane.<br>
+&nbsp;&nbsp;-&nbsp;outFlowLanes:&nbsp;lanes&nbsp;to&nbsp;which&nbsp;vehicles&nbsp;can&nbsp;proceed&nbsp;from&nbsp;this&nbsp;lane.<br>
+&nbsp;<br>
+The&nbsp;connection&nbsp;pattern&nbsp;depends&nbsp;on&nbsp;the&nbsp;relative&nbsp;orientation&nbsp;of&nbsp;the&nbsp;roads<br>
+(straight,&nbsp;left&nbsp;turn,&nbsp;right&nbsp;turn,&nbsp;or&nbsp;opposite&nbsp;direction).</span></dd></dl>
+
+<dl><dt><a name="Network-update_flow_roads"><strong>update_flow_roads</strong></a>(self)</dt><dd><span class="code">Update&nbsp;inflow&nbsp;and&nbsp;outflow&nbsp;road&nbsp;lists&nbsp;for&nbsp;each&nbsp;road.<br>
+&nbsp;<br>
+For&nbsp;each&nbsp;road:<br>
+&nbsp;&nbsp;-&nbsp;inFlowRoads:&nbsp;all&nbsp;roads&nbsp;entering&nbsp;the&nbsp;start&nbsp;node&nbsp;of&nbsp;this&nbsp;road.<br>
+&nbsp;&nbsp;-&nbsp;outFlowRoads:&nbsp;all&nbsp;roads&nbsp;leaving&nbsp;the&nbsp;end&nbsp;node&nbsp;of&nbsp;this&nbsp;road.<br>
+&nbsp;&nbsp;-&nbsp;parallelRoad:&nbsp;a&nbsp;road&nbsp;that&nbsp;shares&nbsp;start&nbsp;and&nbsp;end&nbsp;nodes&nbsp;(opposite&nbsp;direction).</span></dd></dl>
+
+<dl><dt><a name="Network-yen_k_shortest_paths"><strong>yen_k_shortest_paths</strong></a>(self, start_road_ID, start_lane_ID, end_node_ID, K)</dt><dd><span class="code">Compute&nbsp;the&nbsp;K&nbsp;shortest&nbsp;loopless&nbsp;paths&nbsp;using&nbsp;Yen’s&nbsp;algorithm&nbsp;on&nbsp;lanes.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;uses&nbsp;`<a href="#Network-generate_route">generate_route</a>()`&nbsp;(Dijkstra)&nbsp;as&nbsp;a&nbsp;subroutine&nbsp;and<br>
+generates&nbsp;up&nbsp;to&nbsp;K&nbsp;distinct&nbsp;loopless&nbsp;paths&nbsp;from&nbsp;a&nbsp;given&nbsp;start&nbsp;road/lane<br>
+to&nbsp;a&nbsp;target&nbsp;node.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+start_road_ID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Road">Road</a>&nbsp;where&nbsp;the&nbsp;path&nbsp;starts.<br>
+start_lane_ID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Lane">Lane</a>&nbsp;index&nbsp;within&nbsp;the&nbsp;starting&nbsp;road.<br>
+end_node_ID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Target&nbsp;node&nbsp;ID.<br>
+K&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Maximum&nbsp;number&nbsp;of&nbsp;distinct&nbsp;shortest&nbsp;paths&nbsp;to&nbsp;compute.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;List&nbsp;of&nbsp;tuples&nbsp;(path,&nbsp;cost)&nbsp;where:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;path&nbsp;is&nbsp;a&nbsp;deque&nbsp;of&nbsp;(road_id,&nbsp;lane_id)&nbsp;tuples.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;cost&nbsp;is&nbsp;the&nbsp;total&nbsp;path&nbsp;length.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;an&nbsp;empty&nbsp;list&nbsp;if&nbsp;no&nbsp;path&nbsp;exists.</span></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+</td></tr></table> <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="Node">class <strong>Node</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#Node">Node</a>(network,&nbsp;ID:&nbsp;int,&nbsp;pos:&nbsp;list[int,&nbsp;int],&nbsp;type_of_intersection:&nbsp;str,&nbsp;spacing)<br>
+&nbsp;<br>
+<a href="#Node">Node</a>&nbsp;in&nbsp;the&nbsp;road&nbsp;network.<br>
+&nbsp;<br>
+Represents&nbsp;either:<br>
+&nbsp;&nbsp;-&nbsp;A&nbsp;traffic&nbsp;light&nbsp;intersection&nbsp;inside&nbsp;the&nbsp;grid,&nbsp;or<br>
+&nbsp;&nbsp;-&nbsp;A&nbsp;spawn&nbsp;node&nbsp;on&nbsp;the&nbsp;border&nbsp;for&nbsp;cars&nbsp;entering/leaving&nbsp;the&nbsp;grid.<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+network&nbsp;:&nbsp;<a href="#Network">Network</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Reference&nbsp;to&nbsp;the&nbsp;owning&nbsp;network.<br>
+ID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Unique&nbsp;identifier&nbsp;for&nbsp;the&nbsp;node.<br>
+pos&nbsp;:&nbsp;list[int,&nbsp;int]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Position&nbsp;coordinates&nbsp;[x,&nbsp;y].<br>
+type&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Type&nbsp;of&nbsp;node,&nbsp;e.g.&nbsp;"traffic_light"&nbsp;or&nbsp;"spawn".<br>
+neighbourNodes&nbsp;:&nbsp;list[<a href="#Node">Node</a>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Adjacent&nbsp;nodes&nbsp;connected&nbsp;by&nbsp;a&nbsp;road.<br>
+inRoads&nbsp;:&nbsp;list[<a href="#Road">Road</a>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Roads&nbsp;ending&nbsp;at&nbsp;this&nbsp;node.<br>
+outRoads&nbsp;:&nbsp;list[<a href="#Road">Road</a>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Roads&nbsp;starting&nbsp;at&nbsp;this&nbsp;node.<br>
+spacing&nbsp;:&nbsp;int&nbsp;or&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Grid&nbsp;spacing&nbsp;used&nbsp;for&nbsp;directional&nbsp;vector&nbsp;calculations.<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt><a name="Node-__init__"><strong>__init__</strong></a>(self, network, ID: int, pos: list[int, int], type_of_intersection: str, spacing)</dt><dd><span class="code">Initialize&nbsp;a&nbsp;<a href="#Node">Node</a>.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+network&nbsp;:&nbsp;<a href="#Network">Network</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Parent&nbsp;network&nbsp;containing&nbsp;this&nbsp;node.<br>
+ID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Unique&nbsp;node&nbsp;identifier.<br>
+pos&nbsp;:&nbsp;list[int,&nbsp;int]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[x,&nbsp;y]&nbsp;coordinates&nbsp;of&nbsp;the&nbsp;node.<br>
+type_of_intersection&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Node">Node</a>&nbsp;type&nbsp;(e.g.,&nbsp;"traffic_light",&nbsp;"spawn").<br>
+spacing&nbsp;:&nbsp;int&nbsp;or&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Grid&nbsp;spacing&nbsp;value&nbsp;used&nbsp;by&nbsp;roads&nbsp;to&nbsp;compute&nbsp;direction&nbsp;vectors.</span></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+</td></tr></table> <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="Road">class <strong>Road</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#Road">Road</a>(ID:&nbsp;int,&nbsp;laneCount:&nbsp;int,&nbsp;road_capacity,&nbsp;startNode:&nbsp;'<a href="#Node">Node</a>',&nbsp;endNode:&nbsp;'<a href="#Node">Node</a>')<br>
+&nbsp;<br>
+Directed&nbsp;road&nbsp;connecting&nbsp;two&nbsp;nodes&nbsp;in&nbsp;the&nbsp;network.<br>
+&nbsp;<br>
+Each&nbsp;road&nbsp;has&nbsp;one&nbsp;or&nbsp;more&nbsp;lanes,&nbsp;a&nbsp;fixed&nbsp;length&nbsp;(capacity)&nbsp;and&nbsp;a<br>
+direction&nbsp;vector&nbsp;derived&nbsp;from&nbsp;the&nbsp;start&nbsp;and&nbsp;end&nbsp;node&nbsp;positions.<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+ID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Unique&nbsp;road&nbsp;identifier.<br>
+laneCount&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;lanes&nbsp;on&nbsp;this&nbsp;road.<br>
+lanes&nbsp;:&nbsp;dict[int,&nbsp;<a href="#Lane">Lane</a>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Mapping&nbsp;from&nbsp;lane&nbsp;index&nbsp;to&nbsp;<a href="#Lane">Lane</a>&nbsp;<a href="builtins.html#object">object</a>.<br>
+startNode&nbsp;:&nbsp;<a href="#Node">Node</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Node">Node</a>&nbsp;where&nbsp;this&nbsp;road&nbsp;begins.<br>
+endNode&nbsp;:&nbsp;<a href="#Node">Node</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Node">Node</a>&nbsp;where&nbsp;this&nbsp;road&nbsp;ends.<br>
+nodeSet&nbsp;:&nbsp;list[int]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Sorted&nbsp;list&nbsp;of&nbsp;[startNode.ID,&nbsp;endNode.ID].<br>
+parallelRoad&nbsp;:&nbsp;<a href="#Road">Road</a>&nbsp;or&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Road">Road</a>&nbsp;that&nbsp;has&nbsp;the&nbsp;same&nbsp;two&nbsp;nodes&nbsp;but&nbsp;opposite&nbsp;direction.<br>
+length&nbsp;:&nbsp;int&nbsp;or&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Logical&nbsp;length/capacity&nbsp;for&nbsp;all&nbsp;lanes&nbsp;in&nbsp;this&nbsp;road.<br>
+angle_sin&nbsp;:&nbsp;float&nbsp;or&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Reserved&nbsp;for&nbsp;geometric&nbsp;calculations&nbsp;(not&nbsp;used&nbsp;here).<br>
+angle_cos&nbsp;:&nbsp;float&nbsp;or&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Reserved&nbsp;for&nbsp;geometric&nbsp;calculations&nbsp;(not&nbsp;used&nbsp;here).<br>
+vector_direction&nbsp;:&nbsp;tuple[float,&nbsp;float]&nbsp;or&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Normalized&nbsp;direction&nbsp;vector&nbsp;from&nbsp;startNode&nbsp;to&nbsp;endNode.<br>
+inFlowRoads&nbsp;:&nbsp;list[<a href="#Road">Road</a>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Roads&nbsp;that&nbsp;feed&nbsp;into&nbsp;this&nbsp;road&nbsp;at&nbsp;the&nbsp;start&nbsp;node.<br>
+outFlowRoads&nbsp;:&nbsp;list[<a href="#Road">Road</a>]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Roads&nbsp;reachable&nbsp;from&nbsp;this&nbsp;road&nbsp;at&nbsp;the&nbsp;end&nbsp;node.<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt><a name="Road-__init__"><strong>__init__</strong></a>(self, ID: int, laneCount: int, road_capacity, startNode: 'Node', endNode: 'Node')</dt><dd><span class="code">Initialize&nbsp;a&nbsp;<a href="#Road">Road</a>.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+ID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Unique&nbsp;road&nbsp;identifier.<br>
+laneCount&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;lanes&nbsp;in&nbsp;this&nbsp;road.<br>
+road_capacity&nbsp;:&nbsp;int&nbsp;or&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Logical&nbsp;capacity/length&nbsp;of&nbsp;the&nbsp;road.<br>
+startNode&nbsp;:&nbsp;<a href="#Node">Node</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Origin&nbsp;node.<br>
+endNode&nbsp;:&nbsp;<a href="#Node">Node</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Destination&nbsp;node.</span></dd></dl>
+
+<dl><dt><a name="Road-init_properties"><strong>init_properties</strong></a>(self)</dt><dd><span class="code">Initialize&nbsp;road&nbsp;properties&nbsp;and&nbsp;create&nbsp;its&nbsp;lanes.<br>
+&nbsp;<br>
+This&nbsp;method:<br>
+&nbsp;&nbsp;-&nbsp;Registers&nbsp;the&nbsp;road&nbsp;in&nbsp;the&nbsp;start&nbsp;and&nbsp;end&nbsp;nodes.<br>
+&nbsp;&nbsp;-&nbsp;Computes&nbsp;the&nbsp;direction&nbsp;vector&nbsp;based&nbsp;on&nbsp;node&nbsp;positions.<br>
+&nbsp;&nbsp;-&nbsp;Creates&nbsp;the&nbsp;lane&nbsp;objects&nbsp;for&nbsp;this&nbsp;road.</span></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>

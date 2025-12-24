@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module interface</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">interface</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cuser%5Conedrive%5Cdocumentos%5Ctraffic%5Cinterface.py">c:\users\user\onedrive\documentos\traffic\interface.py</a></td></tr></table>
+    <p><span class="code">Pygame-based&nbsp;visualization&nbsp;for&nbsp;the&nbsp;traffic&nbsp;simulation.<br>
+&nbsp;<br>
+This&nbsp;module&nbsp;is&nbsp;responsible&nbsp;for:<br>
+&nbsp;&nbsp;-&nbsp;Drawing&nbsp;the&nbsp;static&nbsp;road&nbsp;network&nbsp;(nodes,&nbsp;roads,&nbsp;lanes).<br>
+&nbsp;&nbsp;-&nbsp;Rendering&nbsp;dynamic&nbsp;elements&nbsp;such&nbsp;as&nbsp;traffic&nbsp;lights&nbsp;and&nbsp;vehicles.<br>
+&nbsp;&nbsp;-&nbsp;Running&nbsp;a&nbsp;main&nbsp;Pygame&nbsp;loop&nbsp;that&nbsp;continuously&nbsp;updates&nbsp;the&nbsp;screen.<br>
+&nbsp;<br>
+It&nbsp;does&nbsp;not&nbsp;implement&nbsp;any&nbsp;simulation&nbsp;logic&nbsp;itself;&nbsp;it&nbsp;only&nbsp;reads<br>
+the&nbsp;current&nbsp;state&nbsp;from&nbsp;the&nbsp;Network&nbsp;and&nbsp;agent&nbsp;objects&nbsp;and&nbsp;displays&nbsp;it.</span></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="pygame.html">pygame</a><br>
+<a href="random.html">random</a><br>
+</td><td class="multicolumn"><a href="threading.html">threading</a><br>
+<a href="time.html">time</a><br>
+</td><td class="multicolumn"><a href="traceback.html">traceback</a><br>
+</td><td class="multicolumn"></td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor functions-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Functions</strong></td></tr>
+    
+<tr><td class="decor functions-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt><a name="-draw_map"><strong>draw_map</strong></a>(screen, network)</dt><dd><span class="code">Draw&nbsp;the&nbsp;static&nbsp;map&nbsp;(nodes&nbsp;and&nbsp;roads/lanes)&nbsp;onto&nbsp;the&nbsp;given&nbsp;surface.<br>
+&nbsp;<br>
+This&nbsp;function:<br>
+&nbsp;&nbsp;-&nbsp;Draws&nbsp;intersections&nbsp;and&nbsp;spawn&nbsp;nodes.<br>
+&nbsp;&nbsp;-&nbsp;Draws&nbsp;each&nbsp;lane&nbsp;as&nbsp;a&nbsp;line&nbsp;segment&nbsp;between&nbsp;two&nbsp;nodes,&nbsp;slightly<br>
+&nbsp;&nbsp;&nbsp;&nbsp;offset&nbsp;depending&nbsp;on&nbsp;the&nbsp;road&nbsp;direction&nbsp;so&nbsp;that&nbsp;lanes&nbsp;are&nbsp;separated.<br>
+&nbsp;&nbsp;-&nbsp;Labels&nbsp;each&nbsp;node&nbsp;and&nbsp;lane&nbsp;with&nbsp;its&nbsp;ID.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+screen&nbsp;:&nbsp;pygame.Surface<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Surface&nbsp;where&nbsp;the&nbsp;map&nbsp;should&nbsp;be&nbsp;rendered.&nbsp;Typically&nbsp;a&nbsp;background&nbsp;surface.<br>
+network&nbsp;:&nbsp;Network<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Network&nbsp;instance&nbsp;containing&nbsp;nodes,&nbsp;roads&nbsp;and&nbsp;lanes&nbsp;to&nbsp;be&nbsp;drawn.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+dict<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Dictionary&nbsp;mapping&nbsp;(road_id,&nbsp;lane_index)&nbsp;to&nbsp;a&nbsp;tuple<br>
+&nbsp;&nbsp;&nbsp;&nbsp;((x_start,&nbsp;y_start),&nbsp;(x_end,&nbsp;y_end))&nbsp;representing&nbsp;the&nbsp;lane&nbsp;geometry<br>
+&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;screen&nbsp;coordinates.&nbsp;This&nbsp;mapping&nbsp;is&nbsp;later&nbsp;used&nbsp;to&nbsp;position&nbsp;cars.</span></dd></dl>
+ <dl><dt><a name="-draw_network"><strong>draw_network</strong></a>(screen, network, lanes, traffic_lights, cars)</dt><dd><span class="code">Draw&nbsp;the&nbsp;dynamic&nbsp;state&nbsp;of&nbsp;the&nbsp;network&nbsp;(traffic&nbsp;lights&nbsp;and&nbsp;cars).<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+screen&nbsp;:&nbsp;pygame.Surface<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Surface&nbsp;where&nbsp;the&nbsp;elements&nbsp;should&nbsp;be&nbsp;drawn.<br>
+network&nbsp;:&nbsp;Network<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Network&nbsp;instance&nbsp;that&nbsp;provides&nbsp;geometry&nbsp;and&nbsp;road&nbsp;information.<br>
+lanes&nbsp;:&nbsp;dict<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Mapping&nbsp;(road_id,&nbsp;lane_index)&nbsp;-&gt;&nbsp;((x_start,&nbsp;y_start),&nbsp;(x_end,&nbsp;y_end))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;returned&nbsp;by&nbsp;draw_map.<br>
+traffic_lights&nbsp;:&nbsp;dict[int,&nbsp;TrafficLightAgent]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Dictionary&nbsp;mapping&nbsp;road&nbsp;IDs&nbsp;to&nbsp;their&nbsp;corresponding&nbsp;TrafficLightAgent.<br>
+cars&nbsp;:&nbsp;iterable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Collection&nbsp;(typically&nbsp;a&nbsp;set)&nbsp;of&nbsp;car-like&nbsp;agents&nbsp;with&nbsp;attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;current_road<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;current_lane<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;position<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;is_priority<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;pulled_over&nbsp;(for&nbsp;non-priority&nbsp;cars)</span></dd></dl>
+ <dl><dt><a name="-game_loop"><strong>game_loop</strong></a>(network, traffic_lights, cars)</dt><dd><span class="code">Main&nbsp;Pygame&nbsp;loop&nbsp;for&nbsp;the&nbsp;visualization.<br>
+&nbsp;<br>
+This&nbsp;loop:<br>
+&nbsp;&nbsp;-&nbsp;Initializes&nbsp;Pygame&nbsp;and&nbsp;the&nbsp;main&nbsp;window.<br>
+&nbsp;&nbsp;-&nbsp;Draws&nbsp;the&nbsp;static&nbsp;background&nbsp;(network&nbsp;layout)&nbsp;once.<br>
+&nbsp;&nbsp;-&nbsp;In&nbsp;each&nbsp;frame:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;Blits&nbsp;the&nbsp;static&nbsp;background.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;Draws&nbsp;traffic&nbsp;lights&nbsp;and&nbsp;vehicles&nbsp;on&nbsp;top.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;Processes&nbsp;quit&nbsp;events.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;Updates&nbsp;the&nbsp;display&nbsp;at&nbsp;a&nbsp;fixed&nbsp;FPS.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+network&nbsp;:&nbsp;Network<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Network&nbsp;instance&nbsp;with&nbsp;the&nbsp;nodes&nbsp;and&nbsp;roads&nbsp;to&nbsp;be&nbsp;visualized.<br>
+traffic_lights&nbsp;:&nbsp;dict[int,&nbsp;TrafficLightAgent]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Dictionary&nbsp;of&nbsp;traffic&nbsp;light&nbsp;agents&nbsp;keyed&nbsp;by&nbsp;road_id.<br>
+cars&nbsp;:&nbsp;iterable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Collection&nbsp;(set/list)&nbsp;of&nbsp;car&nbsp;and&nbsp;priority&nbsp;agents&nbsp;to&nbsp;be&nbsp;drawn.</span></dd></dl>
+</td></tr></table><p>
+<table class="section">
+<tr class="decor data-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Data</strong></td></tr>
+    
+<tr><td class="decor data-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><strong>BLACK</strong> = (0, 0, 0)<br>
+<strong>BLUE</strong> = (0, 0, 255)<br>
+<strong>FPS</strong> = 30<br>
+<strong>GRAY</strong> = (128, 128, 128)<br>
+<strong>GREEN</strong> = (0, 255, 0)<br>
+<strong>HC</strong> = 375<br>
+<strong>PURPLE</strong> = (128, 0, 128)<br>
+<strong>RED</strong> = (255, 0, 0)<br>
+<strong>SCREEN_HEIGHT</strong> = 750<br>
+<strong>SCREEN_WIDTH</strong> = 750<br>
+<strong>WC</strong> = 375<br>
+<strong>WHITE</strong> = (255, 255, 255)<br>
+<strong>YELLOW</strong> = (255, 255, 0)<br>
+<strong>font</strong> = &lt;pygame.font.Font object&gt;</td></tr></table>
+</body></html>

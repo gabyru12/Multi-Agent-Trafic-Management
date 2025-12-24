@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module trafficLight_agent</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">trafficLight_agent</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cuser%5Conedrive%5Cdocumentos%5Ctraffic%5Ctrafficlight_agent.py">c:\users\user\onedrive\documentos\traffic\trafficlight_agent.py</a></td></tr></table>
+    <p></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="asyncio.html">asyncio</a><br>
+</td><td class="multicolumn"><a href="heapq.html">heapq</a><br>
+</td><td class="multicolumn"><a href="json.html">json</a><br>
+</td><td class="multicolumn"><a href="time.html">time</a><br>
+</td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor index-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Classes</strong></td></tr>
+    
+<tr><td class="decor index-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl>
+<dt class="heading-text"><a href="spade.agent.html#Agent">spade.agent.Agent</a>(<a href="builtins.html#object">builtins.object</a>)
+</dt><dd>
+<dl>
+<dt class="heading-text"><a href="trafficLight_agent.html#TrafficLightAgent">TrafficLightAgent</a>
+</dt></dl>
+</dd>
+</dl>
+ <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="TrafficLightAgent">class <strong>TrafficLightAgent</strong></a>(<a href="spade.agent.html#Agent">spade.agent.Agent</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#TrafficLightAgent">TrafficLightAgent</a>(jid:&nbsp;str,&nbsp;password:&nbsp;str,&nbsp;road_id:&nbsp;int,&nbsp;network,&nbsp;green_light_min_time,&nbsp;green_light_max_time,&nbsp;yellow_light_time,&nbsp;clear_intersection_time,&nbsp;selection_method:&nbsp;str&nbsp;=&nbsp;'cyclic')<br>
+&nbsp;<br>
+Traffic&nbsp;light&nbsp;agent&nbsp;responsible&nbsp;for&nbsp;controlling&nbsp;a&nbsp;single&nbsp;road&nbsp;segment.<br>
+&nbsp;<br>
+This&nbsp;agent:<br>
+&nbsp;&nbsp;-&nbsp;Manages&nbsp;lane&nbsp;capacities&nbsp;and&nbsp;the&nbsp;current&nbsp;signal&nbsp;state&nbsp;(red/yellow/green).<br>
+&nbsp;&nbsp;-&nbsp;Responds&nbsp;to&nbsp;cars'&nbsp;requests&nbsp;about&nbsp;signal&nbsp;state,&nbsp;lane&nbsp;capacity&nbsp;and&nbsp;routing.<br>
+&nbsp;&nbsp;-&nbsp;Coordinates&nbsp;with&nbsp;neighbouring&nbsp;traffic&nbsp;lights&nbsp;to&nbsp;decide&nbsp;green&nbsp;cycles.<br>
+&nbsp;&nbsp;-&nbsp;Supports&nbsp;two&nbsp;selection&nbsp;methods:&nbsp;cyclic&nbsp;rotation&nbsp;and&nbsp;proposal-based.<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt>Method resolution order:</dt>
+<dd><a href="trafficLight_agent.html#TrafficLightAgent">TrafficLightAgent</a></dd>
+<dd><a href="spade.agent.html#Agent">spade.agent.Agent</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="TrafficLightAgent-__init__"><strong>__init__</strong></a>(self, jid: str, password: str, road_id: int, network, green_light_min_time, green_light_max_time, yellow_light_time, clear_intersection_time, selection_method: str = 'cyclic')</dt><dd><span class="code">Initialize&nbsp;a&nbsp;<a href="#TrafficLightAgent">TrafficLightAgent</a>.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+jid&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;XMPP&nbsp;JID&nbsp;of&nbsp;the&nbsp;agent.<br>
+password&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Password&nbsp;for&nbsp;the&nbsp;XMPP&nbsp;server.<br>
+road_id&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Identifier&nbsp;of&nbsp;the&nbsp;road&nbsp;segment&nbsp;controlled&nbsp;by&nbsp;this&nbsp;traffic&nbsp;light.<br>
+network<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Reference&nbsp;to&nbsp;the&nbsp;overall&nbsp;road&nbsp;network&nbsp;object.<br>
+green_light_min_time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Minimum&nbsp;allowed&nbsp;time&nbsp;for&nbsp;a&nbsp;green&nbsp;light&nbsp;interval&nbsp;(seconds).<br>
+green_light_max_time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Maximum&nbsp;allowed&nbsp;time&nbsp;for&nbsp;a&nbsp;green&nbsp;light&nbsp;interval&nbsp;(seconds).<br>
+yellow_light_time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Duration&nbsp;of&nbsp;the&nbsp;yellow&nbsp;light&nbsp;phase&nbsp;(seconds).<br>
+clear_intersection_time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Additional&nbsp;time&nbsp;after&nbsp;red&nbsp;to&nbsp;let&nbsp;the&nbsp;intersection&nbsp;clear&nbsp;(seconds).<br>
+selection_method&nbsp;:&nbsp;str,&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Method&nbsp;to&nbsp;select&nbsp;the&nbsp;next&nbsp;traffic&nbsp;light&nbsp;with&nbsp;green;&nbsp;either<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"cyclic"&nbsp;(fixed&nbsp;order)&nbsp;or&nbsp;"proposals"&nbsp;(based&nbsp;on&nbsp;CFP/proposals).</span></dd></dl>
+
+<dl><dt><a name="TrafficLightAgent-dijkstra"><strong>dijkstra</strong></a>(self, start_road_ID: int, start_lane_UID: int, end_node_ID: int)</dt><dd><span class="code">Run&nbsp;Dijkstra's&nbsp;shortest-path&nbsp;algorithm&nbsp;on&nbsp;lanes.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+start_road_ID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Road&nbsp;where&nbsp;the&nbsp;car&nbsp;is&nbsp;currently&nbsp;located.<br>
+start_lane_UID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;UID&nbsp;of&nbsp;the&nbsp;lane&nbsp;where&nbsp;the&nbsp;car&nbsp;currently&nbsp;is.<br>
+end_node_ID&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Target&nbsp;node&nbsp;the&nbsp;car&nbsp;wants&nbsp;to&nbsp;reach.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+tuple<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(path,&nbsp;path_cost)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;:&nbsp;collections.deque<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Deque&nbsp;of&nbsp;tuples&nbsp;(road_id,&nbsp;lane_uid)&nbsp;representing&nbsp;the&nbsp;lane&nbsp;sequence.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;an&nbsp;empty&nbsp;deque&nbsp;if&nbsp;no&nbsp;path&nbsp;exists.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path_cost&nbsp;:&nbsp;float&nbsp;or&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total&nbsp;path&nbsp;cost&nbsp;(e.g.&nbsp;length).&nbsp;None&nbsp;if&nbsp;no&nbsp;path&nbsp;was&nbsp;found.</span></dd></dl>
+
+<dl><dt><a name="TrafficLightAgent-generate_routes"><strong>generate_routes</strong></a>(self, start_road_ID, start_lane_ID, end_node_ID, K)</dt><dd><span class="code">Compute&nbsp;the&nbsp;K-shortest&nbsp;loopless&nbsp;paths&nbsp;using&nbsp;Yen’s&nbsp;algorithm.<br>
+&nbsp;<br>
+The&nbsp;method&nbsp;uses&nbsp;`self.<a href="#TrafficLightAgent-dijkstra">dijkstra</a>()`&nbsp;as&nbsp;the&nbsp;subroutine&nbsp;for&nbsp;finding&nbsp;the<br>
+current&nbsp;shortest&nbsp;path.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+start_road_ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Road&nbsp;ID&nbsp;where&nbsp;the&nbsp;car&nbsp;starts.<br>
+start_lane_ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Lane&nbsp;index&nbsp;within&nbsp;the&nbsp;starting&nbsp;road.<br>
+end_node_ID<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Destination&nbsp;node&nbsp;ID.<br>
+K<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;shortest&nbsp;loopless&nbsp;paths&nbsp;to&nbsp;compute.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;List&nbsp;of&nbsp;tuples&nbsp;(path,&nbsp;cost),&nbsp;where&nbsp;each&nbsp;path&nbsp;is&nbsp;a&nbsp;deque&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(road_id,&nbsp;lane_id)&nbsp;pairs.&nbsp;If&nbsp;no&nbsp;path&nbsp;exists,&nbsp;returns&nbsp;an&nbsp;empty&nbsp;list.</span></dd></dl>
+
+<dl><dt><a name="TrafficLightAgent-get_next_tl_in_cycle"><strong>get_next_tl_in_cycle</strong></a>(self) -&gt; str</dt><dd><span class="code">Get&nbsp;the&nbsp;JID&nbsp;of&nbsp;the&nbsp;next&nbsp;traffic&nbsp;light&nbsp;in&nbsp;the&nbsp;cyclic&nbsp;order&nbsp;for&nbsp;this&nbsp;intersection.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;JID&nbsp;of&nbsp;the&nbsp;next&nbsp;traffic&nbsp;light&nbsp;in&nbsp;the&nbsp;cycle.&nbsp;If&nbsp;this&nbsp;traffic&nbsp;light&nbsp;is&nbsp;not<br>
+&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;the&nbsp;known&nbsp;order,&nbsp;it&nbsp;falls&nbsp;back&nbsp;to&nbsp;returning&nbsp;its&nbsp;own&nbsp;JID.</span></dd></dl>
+
+<dl><dt><a name="TrafficLightAgent-init_properties"><strong>init_properties</strong></a>(self)</dt><dd><span class="code">Initialize&nbsp;agent&nbsp;properties&nbsp;derived&nbsp;from&nbsp;the&nbsp;network.<br>
+&nbsp;<br>
+This&nbsp;loads:<br>
+&nbsp;&nbsp;-&nbsp;Intersection&nbsp;ID&nbsp;(end&nbsp;node&nbsp;of&nbsp;the&nbsp;road).<br>
+&nbsp;&nbsp;-&nbsp;Road&nbsp;capacity&nbsp;and&nbsp;lane&nbsp;count.<br>
+&nbsp;&nbsp;-&nbsp;Per-lane&nbsp;capacity&nbsp;counters&nbsp;and&nbsp;queues&nbsp;of&nbsp;cars.<br>
+&nbsp;&nbsp;-&nbsp;List&nbsp;of&nbsp;traffic&nbsp;lights&nbsp;in&nbsp;this&nbsp;intersection&nbsp;and&nbsp;their&nbsp;cyclic&nbsp;order.</span></dd></dl>
+
+<dl><dt>async <a name="TrafficLightAgent-setup"><strong>setup</strong></a>(self)</dt><dd><span class="code">SPADE&nbsp;agent&nbsp;setup&nbsp;hook.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;called&nbsp;once&nbsp;when&nbsp;the&nbsp;agent&nbsp;is&nbsp;started.&nbsp;It&nbsp;initializes<br>
+properties&nbsp;derived&nbsp;from&nbsp;the&nbsp;network&nbsp;and&nbsp;adds&nbsp;the&nbsp;main&nbsp;cyclic<br>
+behaviour&nbsp;responsible&nbsp;for&nbsp;message&nbsp;handling.</span></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>ReceiveMessageBehaviour</strong> = &lt;class 'trafficLight_agent.TrafficLightAgent.ReceiveMessageBehaviour'&gt;<dd><span class="code">Main&nbsp;cyclic&nbsp;behaviour&nbsp;that&nbsp;receives&nbsp;and&nbsp;processes&nbsp;all&nbsp;messages.<br>
+&nbsp;<br>
+This&nbsp;behaviour:<br>
+&nbsp;&nbsp;-&nbsp;Replies&nbsp;to&nbsp;cars&nbsp;asking&nbsp;for&nbsp;signal&nbsp;state,&nbsp;capacity,&nbsp;or&nbsp;routes.<br>
+&nbsp;&nbsp;-&nbsp;Handles&nbsp;lane&nbsp;updates&nbsp;(cars&nbsp;entering/leaving).<br>
+&nbsp;&nbsp;-&nbsp;Coordinates&nbsp;priority&nbsp;vehicles&nbsp;and&nbsp;informs&nbsp;cars&nbsp;accordingly.<br>
+&nbsp;&nbsp;-&nbsp;Participates&nbsp;in&nbsp;CFP/proposal&nbsp;negotiation&nbsp;for&nbsp;green&nbsp;light&nbsp;turns.<br>
+&nbsp;&nbsp;-&nbsp;Triggers&nbsp;or&nbsp;reacts&nbsp;to&nbsp;cycle&nbsp;start&nbsp;events&nbsp;depending&nbsp;on&nbsp;the&nbsp;policy.</span></dl>
+
+<dl><dt><strong>SignalTimeBehaviour</strong> = &lt;class 'trafficLight_agent.TrafficLightAgent.SignalTimeBehaviour'&gt;<dd><span class="code">Behaviour&nbsp;responsible&nbsp;for&nbsp;a&nbsp;single&nbsp;complete&nbsp;signal&nbsp;cycle.<br>
+&nbsp;<br>
+The&nbsp;cycle&nbsp;is:<br>
+&nbsp;&nbsp;1.&nbsp;Green&nbsp;for&nbsp;a&nbsp;computed&nbsp;amount&nbsp;of&nbsp;time&nbsp;(possibly&nbsp;extended&nbsp;due&nbsp;to&nbsp;priority).<br>
+&nbsp;&nbsp;2.&nbsp;Yellow&nbsp;for&nbsp;a&nbsp;fixed&nbsp;time.<br>
+&nbsp;&nbsp;3.&nbsp;Red&nbsp;plus&nbsp;clearing&nbsp;time.<br>
+&nbsp;&nbsp;4.&nbsp;Decide&nbsp;which&nbsp;traffic&nbsp;light&nbsp;will&nbsp;be&nbsp;next&nbsp;(cyclic&nbsp;or&nbsp;proposals).<br>
+&nbsp;<br>
+It&nbsp;also&nbsp;updates&nbsp;metrics&nbsp;such&nbsp;as:<br>
+&nbsp;&nbsp;-&nbsp;Number&nbsp;of&nbsp;cars&nbsp;that&nbsp;left&nbsp;during&nbsp;the&nbsp;cycle.<br>
+&nbsp;&nbsp;-&nbsp;Total&nbsp;green&nbsp;time.</span></dl>
+
+<hr>
+Methods inherited from <a href="spade.agent.html#Agent">spade.agent.Agent</a>:<br>
+<dl><dt><a name="TrafficLightAgent-add_behaviour"><strong>add_behaviour</strong></a>(self, behaviour: ~BehaviourType, template: Optional[spade.template.Template] = None) -&gt; None</dt><dd><span class="code">Adds&nbsp;and&nbsp;starts&nbsp;a&nbsp;behaviour&nbsp;to&nbsp;the&nbsp;agent.<br>
+If&nbsp;template&nbsp;is&nbsp;not&nbsp;None&nbsp;it&nbsp;is&nbsp;used&nbsp;to&nbsp;match<br>
+new&nbsp;messages&nbsp;and&nbsp;deliver&nbsp;them&nbsp;to&nbsp;the&nbsp;behaviour.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;behaviour&nbsp;(Type[spade.behaviour.CyclicBehaviour]):&nbsp;the&nbsp;behaviour&nbsp;to&nbsp;be&nbsp;started<br>
+&nbsp;&nbsp;template&nbsp;(spade.template.Template,&nbsp;optional):&nbsp;the&nbsp;template&nbsp;to&nbsp;match&nbsp;messages&nbsp;with&nbsp;(Default&nbsp;value&nbsp;=&nbsp;None)</span></dd></dl>
+
+<dl><dt><a name="TrafficLightAgent-dispatch"><strong>dispatch</strong></a>(self, msg: spade.message.Message) -&gt; List[_asyncio.Task]</dt><dd><span class="code">Dispatch&nbsp;the&nbsp;message&nbsp;to&nbsp;every&nbsp;behaviour&nbsp;that&nbsp;is&nbsp;waiting&nbsp;for<br>
+it&nbsp;using&nbsp;their&nbsp;templates&nbsp;match.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;msg&nbsp;(spade.message.Message):&nbsp;the&nbsp;message&nbsp;to&nbsp;dispatch.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list(asyncio.Future):&nbsp;a&nbsp;list&nbsp;of&nbsp;tasks&nbsp;for&nbsp;each&nbsp;message&nbsp;queuing&nbsp;in&nbsp;each&nbsp;matching&nbsp;behavior.</span></dd></dl>
+
+<dl><dt><a name="TrafficLightAgent-get"><strong>get</strong></a>(self, name: str) -&gt; Any</dt><dd><span class="code">Recovers&nbsp;a&nbsp;knowledge&nbsp;item&nbsp;from&nbsp;the&nbsp;agent's&nbsp;knowledge&nbsp;base.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;<a href="#TrafficLightAgent-name">name</a>(str):&nbsp;name&nbsp;of&nbsp;the&nbsp;item<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;object:&nbsp;the&nbsp;object&nbsp;retrieved&nbsp;or&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="TrafficLightAgent-has_behaviour"><strong>has_behaviour</strong></a>(self, behaviour: Type[spade.behaviour.CyclicBehaviour]) -&gt; bool</dt><dd><span class="code">Checks&nbsp;if&nbsp;a&nbsp;behaviour&nbsp;is&nbsp;added&nbsp;to&nbsp;an&nbsp;agent.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;behaviour&nbsp;(Type[spade.behaviour.CyclicBehaviour]):&nbsp;the&nbsp;behaviour&nbsp;instance&nbsp;to&nbsp;check<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;bool:&nbsp;a&nbsp;boolean&nbsp;that&nbsp;indicates&nbsp;wether&nbsp;the&nbsp;behaviour&nbsp;is&nbsp;inside&nbsp;the&nbsp;agent.</span></dd></dl>
+
+<dl><dt><a name="TrafficLightAgent-is_alive"><strong>is_alive</strong></a>(self) -&gt; bool</dt><dd><span class="code">Checks&nbsp;if&nbsp;the&nbsp;agent&nbsp;is&nbsp;alive.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;bool:&nbsp;wheter&nbsp;the&nbsp;agent&nbsp;is&nbsp;alive&nbsp;or&nbsp;not</span></dd></dl>
+
+<dl><dt><a name="TrafficLightAgent-remove_behaviour"><strong>remove_behaviour</strong></a>(self, behaviour: Type[spade.behaviour.CyclicBehaviour]) -&gt; None</dt><dd><span class="code">Removes&nbsp;a&nbsp;behaviour&nbsp;from&nbsp;the&nbsp;agent.<br>
+The&nbsp;behaviour&nbsp;is&nbsp;first&nbsp;killed.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;behaviour&nbsp;(Type[spade.behaviour.CyclicBehaviour]):&nbsp;the&nbsp;behaviour&nbsp;instance&nbsp;to&nbsp;be&nbsp;removed</span></dd></dl>
+
+<dl><dt><a name="TrafficLightAgent-set"><strong>set</strong></a>(self, name: str, value: Any)</dt><dd><span class="code">Stores&nbsp;a&nbsp;knowledge&nbsp;item&nbsp;in&nbsp;the&nbsp;agent&nbsp;knowledge&nbsp;base.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;name&nbsp;(str):&nbsp;name&nbsp;of&nbsp;the&nbsp;item<br>
+&nbsp;&nbsp;value&nbsp;(object):&nbsp;value&nbsp;of&nbsp;the&nbsp;item</span></dd></dl>
+
+<dl><dt><a name="TrafficLightAgent-set_container"><strong>set_container</strong></a>(self, container: spade.container.Container) -&gt; None</dt><dd><span class="code">Sets&nbsp;the&nbsp;container&nbsp;to&nbsp;which&nbsp;the&nbsp;agent&nbsp;is&nbsp;attached<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;container&nbsp;(spade.container.Container):&nbsp;the&nbsp;container&nbsp;to&nbsp;be&nbsp;attached&nbsp;to</span></dd></dl>
+
+<dl><dt><a name="TrafficLightAgent-set_loop"><strong>set_loop</strong></a>(self, loop) -&gt; None</dt></dl>
+
+<dl><dt>async <a name="TrafficLightAgent-start"><strong>start</strong></a>(self, auto_register: bool = True) -&gt; None</dt><dd><span class="code">Starts&nbsp;this&nbsp;agent.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;auto_register&nbsp;(bool):&nbsp;register&nbsp;the&nbsp;agent&nbsp;in&nbsp;the&nbsp;server&nbsp;(Default&nbsp;value&nbsp;=&nbsp;True)<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<dl><dt>async <a name="TrafficLightAgent-stop"><strong>stop</strong></a>(self) -&gt; None</dt><dd><span class="code">Stops&nbsp;this&nbsp;agent.</span></dd></dl>
+
+<dl><dt><a name="TrafficLightAgent-submit"><strong>submit</strong></a>(self, coro: Coroutine) -&gt; _asyncio.Task</dt><dd><span class="code">Runs&nbsp;a&nbsp;coroutine&nbsp;in&nbsp;the&nbsp;event&nbsp;loop&nbsp;of&nbsp;the&nbsp;agent.<br>
+this&nbsp;call&nbsp;is&nbsp;not&nbsp;blocking.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;coro&nbsp;(Coroutine):&nbsp;the&nbsp;coroutine&nbsp;to&nbsp;be&nbsp;run<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;asyncio.Task:&nbsp;the&nbsp;Task&nbsp;assigned&nbsp;to&nbsp;the&nbsp;coroutine&nbsp;execution</span></dd></dl>
+
+<hr>
+Static methods inherited from <a href="spade.agent.html#Agent">spade.agent.Agent</a>:<br>
+<dl><dt><a name="TrafficLightAgent-build_avatar_url"><strong>build_avatar_url</strong></a>(jid: str) -&gt; str</dt><dd><span class="code">Static&nbsp;method&nbsp;to&nbsp;build&nbsp;a&nbsp;gravatar&nbsp;url&nbsp;with&nbsp;the&nbsp;agent's&nbsp;JID<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;jid&nbsp;(aioxmpp.JID):&nbsp;an&nbsp;XMPP&nbsp;identifier<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;str:&nbsp;a&nbsp;URL&nbsp;for&nbsp;the&nbsp;gravatar</span></dd></dl>
+
+<hr>
+Readonly properties inherited from <a href="spade.agent.html#Agent">spade.agent.Agent</a>:<br>
+<dl><dt><strong>avatar</strong></dt>
+<dd><span class="code">Generates&nbsp;a&nbsp;unique&nbsp;avatar&nbsp;for&nbsp;the&nbsp;agent&nbsp;based&nbsp;on&nbsp;its&nbsp;JID.<br>
+Uses&nbsp;Gravatar&nbsp;service&nbsp;with&nbsp;MonsterID&nbsp;option.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;str:&nbsp;the&nbsp;url&nbsp;of&nbsp;the&nbsp;agent's&nbsp;avatar</span></dd>
+</dl>
+<dl><dt><strong>name</strong></dt>
+<dd><span class="code">Returns&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;agent&nbsp;(the&nbsp;string&nbsp;before&nbsp;the&nbsp;'@')<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;agent&nbsp;(the&nbsp;string&nbsp;before&nbsp;the&nbsp;'@')</span></dd>
+</dl>
+<hr>
+Data descriptors inherited from <a href="spade.agent.html#Agent">spade.agent.Agent</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>

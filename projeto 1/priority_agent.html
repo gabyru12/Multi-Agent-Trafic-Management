@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module priority_agent</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">priority_agent</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cuser%5Conedrive%5Cdocumentos%5Ctraffic%5Cpriority_agent.py">c:\users\user\onedrive\documentos\traffic\priority_agent.py</a></td></tr></table>
+    <p><span class="code">Priority&nbsp;vehicle&nbsp;agent.<br>
+&nbsp;<br>
+This&nbsp;module&nbsp;defines&nbsp;the&nbsp;<a href="#PriorityAgent">PriorityAgent</a>,&nbsp;which&nbsp;represents&nbsp;a&nbsp;priority&nbsp;vehicle<br>
+(e.g.,&nbsp;ambulance,&nbsp;firetruck)&nbsp;in&nbsp;the&nbsp;traffic&nbsp;simulation.&nbsp;The&nbsp;agent:<br>
+&nbsp;&nbsp;-&nbsp;Requests&nbsp;routes&nbsp;from&nbsp;traffic&nbsp;lights&nbsp;to&nbsp;reach&nbsp;a&nbsp;given&nbsp;destination.<br>
+&nbsp;&nbsp;-&nbsp;Moves&nbsp;along&nbsp;roads&nbsp;with&nbsp;priority&nbsp;handling&nbsp;at&nbsp;intersections.<br>
+&nbsp;&nbsp;-&nbsp;Continuously&nbsp;notifies&nbsp;the&nbsp;current&nbsp;traffic&nbsp;light&nbsp;of&nbsp;its&nbsp;position&nbsp;so&nbsp;that<br>
+&nbsp;&nbsp;&nbsp;&nbsp;traffic&nbsp;signals&nbsp;can&nbsp;be&nbsp;adjusted&nbsp;to&nbsp;favor&nbsp;its&nbsp;movement.</span></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="asyncio.html">asyncio</a><br>
+</td><td class="multicolumn"><a href="json.html">json</a><br>
+</td><td class="multicolumn"></td><td class="multicolumn"></td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor index-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Classes</strong></td></tr>
+    
+<tr><td class="decor index-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl>
+<dt class="heading-text"><a href="spade.agent.html#Agent">spade.agent.Agent</a>(<a href="builtins.html#object">builtins.object</a>)
+</dt><dd>
+<dl>
+<dt class="heading-text"><a href="priority_agent.html#PriorityAgent">PriorityAgent</a>
+</dt></dl>
+</dd>
+</dl>
+ <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="PriorityAgent">class <strong>PriorityAgent</strong></a>(<a href="spade.agent.html#Agent">spade.agent.Agent</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code"><a href="#PriorityAgent">PriorityAgent</a>(jid,&nbsp;password,&nbsp;starting_road,&nbsp;end_node,&nbsp;periodic_movement,&nbsp;remove_callback=None)<br>
+&nbsp;<br>
+<a href="spade.agent.html#Agent">Agent</a>&nbsp;that&nbsp;models&nbsp;a&nbsp;priority&nbsp;vehicle&nbsp;within&nbsp;the&nbsp;traffic&nbsp;system.<br>
+&nbsp;<br>
+Attributes<br>
+----------<br>
+starting_road&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Initial&nbsp;road&nbsp;where&nbsp;the&nbsp;priority&nbsp;vehicle&nbsp;spawns.<br>
+starting_lane&nbsp;:&nbsp;str&nbsp;or&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Initial&nbsp;lane&nbsp;identifier&nbsp;("any"&nbsp;means&nbsp;the&nbsp;TL&nbsp;can&nbsp;choose).<br>
+end_node&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Destination&nbsp;node&nbsp;that&nbsp;the&nbsp;agent&nbsp;wants&nbsp;to&nbsp;reach.<br>
+remove_callback&nbsp;:&nbsp;callable&nbsp;or&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Optional&nbsp;function&nbsp;to&nbsp;be&nbsp;called&nbsp;when&nbsp;the&nbsp;agent&nbsp;is&nbsp;removed.<br>
+travel_weight&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Weight&nbsp;given&nbsp;to&nbsp;travel&nbsp;time&nbsp;in&nbsp;route&nbsp;choice&nbsp;(not&nbsp;fully&nbsp;used&nbsp;here).<br>
+capacity_weight&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Weight&nbsp;given&nbsp;to&nbsp;lane&nbsp;capacity&nbsp;in&nbsp;route&nbsp;choice&nbsp;(not&nbsp;fully&nbsp;used&nbsp;here).<br>
+is_priority&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Flag&nbsp;indicating&nbsp;that&nbsp;this&nbsp;is&nbsp;a&nbsp;priority&nbsp;vehicle.<br>
+periodic_movement&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Time&nbsp;interval&nbsp;(seconds)&nbsp;between&nbsp;movement&nbsp;updates.<br>
+&nbsp;<br>
+current_road&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Road&nbsp;where&nbsp;the&nbsp;vehicle&nbsp;is&nbsp;currently&nbsp;located.<br>
+current_lane&nbsp;:&nbsp;str&nbsp;or&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Lane&nbsp;where&nbsp;the&nbsp;vehicle&nbsp;is&nbsp;currently&nbsp;located.<br>
+current_tl_jid&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;JID&nbsp;of&nbsp;the&nbsp;traffic&nbsp;light&nbsp;agent&nbsp;controlling&nbsp;the&nbsp;current&nbsp;road.<br>
+current_tl_signal&nbsp;:&nbsp;str&nbsp;or&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Current&nbsp;signal&nbsp;("red",&nbsp;"yellow",&nbsp;"green")&nbsp;received&nbsp;from&nbsp;the&nbsp;TL.<br>
+current_lane_capacity&nbsp;:&nbsp;int&nbsp;or&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Unused&nbsp;here;&nbsp;kept&nbsp;for&nbsp;consistency&nbsp;with&nbsp;car&nbsp;agent&nbsp;logic.<br>
+total_lane_capacity&nbsp;:&nbsp;int&nbsp;or&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Maximum&nbsp;position&nbsp;/&nbsp;capacity&nbsp;for&nbsp;the&nbsp;current&nbsp;lane.<br>
+position&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Current&nbsp;position&nbsp;of&nbsp;the&nbsp;vehicle&nbsp;in&nbsp;the&nbsp;lane&nbsp;(1..capacity).<br>
+can_still_move_to&nbsp;:&nbsp;int&nbsp;or&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Limit&nbsp;position&nbsp;the&nbsp;vehicle&nbsp;can&nbsp;move&nbsp;to&nbsp;within&nbsp;the&nbsp;lane.<br>
+route&nbsp;:&nbsp;deque&nbsp;or&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Remaining&nbsp;route&nbsp;as&nbsp;a&nbsp;deque&nbsp;of&nbsp;(road_id,&nbsp;lane_id)&nbsp;tuples.<br>
+n_received_capacities&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;capacity&nbsp;responses&nbsp;received.<br>
+received_capacities&nbsp;:&nbsp;dict<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Mapping&nbsp;from&nbsp;road_id&nbsp;to&nbsp;lane&nbsp;total&nbsp;capacity.<br>
+wasted_fuel&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Placeholder&nbsp;metric&nbsp;for&nbsp;fuel&nbsp;consumption.<br>
+fuel_consumption&nbsp;:&nbsp;dict<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Fuel&nbsp;consumption&nbsp;rates&nbsp;for&nbsp;different&nbsp;states.<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt>Method resolution order:</dt>
+<dd><a href="priority_agent.html#PriorityAgent">PriorityAgent</a></dd>
+<dd><a href="spade.agent.html#Agent">spade.agent.Agent</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="PriorityAgent-__init__"><strong>__init__</strong></a>(self, jid, password, starting_road, end_node, periodic_movement, remove_callback=None)</dt><dd><span class="code">Initialize&nbsp;a&nbsp;<a href="#PriorityAgent">PriorityAgent</a>.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+jid&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;XMPP&nbsp;JID&nbsp;of&nbsp;the&nbsp;agent.<br>
+password&nbsp;:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Password&nbsp;for&nbsp;the&nbsp;XMPP&nbsp;server.<br>
+starting_road&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Road&nbsp;where&nbsp;the&nbsp;priority&nbsp;vehicle&nbsp;starts.<br>
+end_node&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Target&nbsp;destination&nbsp;node&nbsp;ID.<br>
+periodic_movement&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Interval&nbsp;in&nbsp;seconds&nbsp;between&nbsp;movement&nbsp;steps.<br>
+remove_callback&nbsp;:&nbsp;callable,&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Optional&nbsp;callback&nbsp;executed&nbsp;when&nbsp;the&nbsp;agent&nbsp;is&nbsp;removed.</span></dd></dl>
+
+<dl><dt>async <a name="PriorityAgent-setup"><strong>setup</strong></a>(self)</dt><dd><span class="code">SPADE&nbsp;setup&nbsp;method.<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;called&nbsp;once&nbsp;when&nbsp;the&nbsp;agent&nbsp;starts.&nbsp;It:<br>
+&nbsp;&nbsp;-&nbsp;Prints&nbsp;a&nbsp;startup&nbsp;message.<br>
+&nbsp;&nbsp;-&nbsp;Adds&nbsp;the&nbsp;cyclic&nbsp;behaviour&nbsp;to&nbsp;receive&nbsp;messages.<br>
+&nbsp;&nbsp;-&nbsp;Adds&nbsp;the&nbsp;one-shot&nbsp;SpawnPriority&nbsp;behaviour&nbsp;to&nbsp;initialize&nbsp;movement.</span></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>DriveController</strong> = &lt;class 'priority_agent.PriorityAgent.DriveController'&gt;<dd><span class="code">Main&nbsp;driving&nbsp;logic&nbsp;executed&nbsp;periodically.</span></dl>
+
+<dl><dt><strong>ReceiveMessageBehaviour</strong> = &lt;class 'priority_agent.PriorityAgent.ReceiveMessageBehaviour'&gt;<dd><span class="code">Behaviour&nbsp;responsible&nbsp;for&nbsp;receiving&nbsp;and&nbsp;handling&nbsp;messages&nbsp;sent&nbsp;to&nbsp;the&nbsp;priority&nbsp;agent.<br>
+&nbsp;<br>
+This&nbsp;includes:<br>
+&nbsp;&nbsp;-&nbsp;Lane&nbsp;capacity&nbsp;information.<br>
+&nbsp;&nbsp;-&nbsp;Traffic&nbsp;light&nbsp;signal&nbsp;state.<br>
+&nbsp;&nbsp;-&nbsp;Route&nbsp;suggestions.<br>
+&nbsp;&nbsp;-&nbsp;Destination&nbsp;reached&nbsp;notifications.</span></dl>
+
+<dl><dt><strong>SpawnPriority</strong> = &lt;class 'priority_agent.PriorityAgent.SpawnPriority'&gt;<dd><span class="code">Set&nbsp;initial&nbsp;attributes&nbsp;for&nbsp;the&nbsp;priority&nbsp;vehicle&nbsp;and&nbsp;initialize&nbsp;its&nbsp;state.</span></dl>
+
+<hr>
+Methods inherited from <a href="spade.agent.html#Agent">spade.agent.Agent</a>:<br>
+<dl><dt><a name="PriorityAgent-add_behaviour"><strong>add_behaviour</strong></a>(self, behaviour: ~BehaviourType, template: Optional[spade.template.Template] = None) -&gt; None</dt><dd><span class="code">Adds&nbsp;and&nbsp;starts&nbsp;a&nbsp;behaviour&nbsp;to&nbsp;the&nbsp;agent.<br>
+If&nbsp;template&nbsp;is&nbsp;not&nbsp;None&nbsp;it&nbsp;is&nbsp;used&nbsp;to&nbsp;match<br>
+new&nbsp;messages&nbsp;and&nbsp;deliver&nbsp;them&nbsp;to&nbsp;the&nbsp;behaviour.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;behaviour&nbsp;(Type[spade.behaviour.CyclicBehaviour]):&nbsp;the&nbsp;behaviour&nbsp;to&nbsp;be&nbsp;started<br>
+&nbsp;&nbsp;template&nbsp;(spade.template.Template,&nbsp;optional):&nbsp;the&nbsp;template&nbsp;to&nbsp;match&nbsp;messages&nbsp;with&nbsp;(Default&nbsp;value&nbsp;=&nbsp;None)</span></dd></dl>
+
+<dl><dt><a name="PriorityAgent-dispatch"><strong>dispatch</strong></a>(self, msg: spade.message.Message) -&gt; List[_asyncio.Task]</dt><dd><span class="code">Dispatch&nbsp;the&nbsp;message&nbsp;to&nbsp;every&nbsp;behaviour&nbsp;that&nbsp;is&nbsp;waiting&nbsp;for<br>
+it&nbsp;using&nbsp;their&nbsp;templates&nbsp;match.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;msg&nbsp;(spade.message.Message):&nbsp;the&nbsp;message&nbsp;to&nbsp;dispatch.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list(asyncio.Future):&nbsp;a&nbsp;list&nbsp;of&nbsp;tasks&nbsp;for&nbsp;each&nbsp;message&nbsp;queuing&nbsp;in&nbsp;each&nbsp;matching&nbsp;behavior.</span></dd></dl>
+
+<dl><dt><a name="PriorityAgent-get"><strong>get</strong></a>(self, name: str) -&gt; Any</dt><dd><span class="code">Recovers&nbsp;a&nbsp;knowledge&nbsp;item&nbsp;from&nbsp;the&nbsp;agent's&nbsp;knowledge&nbsp;base.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;<a href="#PriorityAgent-name">name</a>(str):&nbsp;name&nbsp;of&nbsp;the&nbsp;item<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;object:&nbsp;the&nbsp;object&nbsp;retrieved&nbsp;or&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="PriorityAgent-has_behaviour"><strong>has_behaviour</strong></a>(self, behaviour: Type[spade.behaviour.CyclicBehaviour]) -&gt; bool</dt><dd><span class="code">Checks&nbsp;if&nbsp;a&nbsp;behaviour&nbsp;is&nbsp;added&nbsp;to&nbsp;an&nbsp;agent.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;behaviour&nbsp;(Type[spade.behaviour.CyclicBehaviour]):&nbsp;the&nbsp;behaviour&nbsp;instance&nbsp;to&nbsp;check<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;bool:&nbsp;a&nbsp;boolean&nbsp;that&nbsp;indicates&nbsp;wether&nbsp;the&nbsp;behaviour&nbsp;is&nbsp;inside&nbsp;the&nbsp;agent.</span></dd></dl>
+
+<dl><dt><a name="PriorityAgent-is_alive"><strong>is_alive</strong></a>(self) -&gt; bool</dt><dd><span class="code">Checks&nbsp;if&nbsp;the&nbsp;agent&nbsp;is&nbsp;alive.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;bool:&nbsp;wheter&nbsp;the&nbsp;agent&nbsp;is&nbsp;alive&nbsp;or&nbsp;not</span></dd></dl>
+
+<dl><dt><a name="PriorityAgent-remove_behaviour"><strong>remove_behaviour</strong></a>(self, behaviour: Type[spade.behaviour.CyclicBehaviour]) -&gt; None</dt><dd><span class="code">Removes&nbsp;a&nbsp;behaviour&nbsp;from&nbsp;the&nbsp;agent.<br>
+The&nbsp;behaviour&nbsp;is&nbsp;first&nbsp;killed.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;behaviour&nbsp;(Type[spade.behaviour.CyclicBehaviour]):&nbsp;the&nbsp;behaviour&nbsp;instance&nbsp;to&nbsp;be&nbsp;removed</span></dd></dl>
+
+<dl><dt><a name="PriorityAgent-set"><strong>set</strong></a>(self, name: str, value: Any)</dt><dd><span class="code">Stores&nbsp;a&nbsp;knowledge&nbsp;item&nbsp;in&nbsp;the&nbsp;agent&nbsp;knowledge&nbsp;base.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;name&nbsp;(str):&nbsp;name&nbsp;of&nbsp;the&nbsp;item<br>
+&nbsp;&nbsp;value&nbsp;(object):&nbsp;value&nbsp;of&nbsp;the&nbsp;item</span></dd></dl>
+
+<dl><dt><a name="PriorityAgent-set_container"><strong>set_container</strong></a>(self, container: spade.container.Container) -&gt; None</dt><dd><span class="code">Sets&nbsp;the&nbsp;container&nbsp;to&nbsp;which&nbsp;the&nbsp;agent&nbsp;is&nbsp;attached<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;container&nbsp;(spade.container.Container):&nbsp;the&nbsp;container&nbsp;to&nbsp;be&nbsp;attached&nbsp;to</span></dd></dl>
+
+<dl><dt><a name="PriorityAgent-set_loop"><strong>set_loop</strong></a>(self, loop) -&gt; None</dt></dl>
+
+<dl><dt>async <a name="PriorityAgent-start"><strong>start</strong></a>(self, auto_register: bool = True) -&gt; None</dt><dd><span class="code">Starts&nbsp;this&nbsp;agent.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;auto_register&nbsp;(bool):&nbsp;register&nbsp;the&nbsp;agent&nbsp;in&nbsp;the&nbsp;server&nbsp;(Default&nbsp;value&nbsp;=&nbsp;True)<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<dl><dt>async <a name="PriorityAgent-stop"><strong>stop</strong></a>(self) -&gt; None</dt><dd><span class="code">Stops&nbsp;this&nbsp;agent.</span></dd></dl>
+
+<dl><dt><a name="PriorityAgent-submit"><strong>submit</strong></a>(self, coro: Coroutine) -&gt; _asyncio.Task</dt><dd><span class="code">Runs&nbsp;a&nbsp;coroutine&nbsp;in&nbsp;the&nbsp;event&nbsp;loop&nbsp;of&nbsp;the&nbsp;agent.<br>
+this&nbsp;call&nbsp;is&nbsp;not&nbsp;blocking.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;coro&nbsp;(Coroutine):&nbsp;the&nbsp;coroutine&nbsp;to&nbsp;be&nbsp;run<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;asyncio.Task:&nbsp;the&nbsp;Task&nbsp;assigned&nbsp;to&nbsp;the&nbsp;coroutine&nbsp;execution</span></dd></dl>
+
+<hr>
+Static methods inherited from <a href="spade.agent.html#Agent">spade.agent.Agent</a>:<br>
+<dl><dt><a name="PriorityAgent-build_avatar_url"><strong>build_avatar_url</strong></a>(jid: str) -&gt; str</dt><dd><span class="code">Static&nbsp;method&nbsp;to&nbsp;build&nbsp;a&nbsp;gravatar&nbsp;url&nbsp;with&nbsp;the&nbsp;agent's&nbsp;JID<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;jid&nbsp;(aioxmpp.JID):&nbsp;an&nbsp;XMPP&nbsp;identifier<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;str:&nbsp;a&nbsp;URL&nbsp;for&nbsp;the&nbsp;gravatar</span></dd></dl>
+
+<hr>
+Readonly properties inherited from <a href="spade.agent.html#Agent">spade.agent.Agent</a>:<br>
+<dl><dt><strong>avatar</strong></dt>
+<dd><span class="code">Generates&nbsp;a&nbsp;unique&nbsp;avatar&nbsp;for&nbsp;the&nbsp;agent&nbsp;based&nbsp;on&nbsp;its&nbsp;JID.<br>
+Uses&nbsp;Gravatar&nbsp;service&nbsp;with&nbsp;MonsterID&nbsp;option.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;str:&nbsp;the&nbsp;url&nbsp;of&nbsp;the&nbsp;agent's&nbsp;avatar</span></dd>
+</dl>
+<dl><dt><strong>name</strong></dt>
+<dd><span class="code">Returns&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;agent&nbsp;(the&nbsp;string&nbsp;before&nbsp;the&nbsp;'@')<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;agent&nbsp;(the&nbsp;string&nbsp;before&nbsp;the&nbsp;'@')</span></dd>
+</dl>
+<hr>
+Data descriptors inherited from <a href="spade.agent.html#Agent">spade.agent.Agent</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</span></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>

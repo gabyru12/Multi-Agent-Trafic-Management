@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module experimentation</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">experimentation</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cuser%5Conedrive%5Cdocumentos%5Ctraffic%5Cexperimentation.py">c:\users\user\onedrive\documentos\traffic\experimentation.py</a></td></tr></table>
+    <p><span class="code">Batch&nbsp;simulation&nbsp;runner&nbsp;for&nbsp;the&nbsp;multi-agent&nbsp;traffic&nbsp;system.<br>
+&nbsp;<br>
+This&nbsp;script:<br>
+&nbsp;&nbsp;-&nbsp;Builds&nbsp;a&nbsp;fixed-size&nbsp;road&nbsp;network.<br>
+&nbsp;&nbsp;-&nbsp;Spawns&nbsp;one&nbsp;TrafficLightAgent&nbsp;per&nbsp;road&nbsp;(using&nbsp;the&nbsp;"proposals"&nbsp;selection&nbsp;method).<br>
+&nbsp;&nbsp;-&nbsp;Pre-generates&nbsp;a&nbsp;deterministic&nbsp;list&nbsp;of&nbsp;car&nbsp;spawn&nbsp;events.<br>
+&nbsp;&nbsp;-&nbsp;Runs&nbsp;multiple&nbsp;simulations&nbsp;varying&nbsp;(travel_weight,&nbsp;capacity_weight)&nbsp;pairs.<br>
+&nbsp;&nbsp;-&nbsp;Collects&nbsp;metrics&nbsp;from&nbsp;each&nbsp;car&nbsp;and&nbsp;global&nbsp;statistics.<br>
+&nbsp;&nbsp;-&nbsp;Saves&nbsp;all&nbsp;metrics&nbsp;as&nbsp;JSON&nbsp;files&nbsp;inside&nbsp;the&nbsp;`simulation_results`&nbsp;folder.</span></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="asyncio.html">asyncio</a><br>
+<a href="interface.html">interface</a><br>
+</td><td class="multicolumn"><a href="json.html">json</a><br>
+<a href="os.html">os</a><br>
+</td><td class="multicolumn"><a href="random.html">random</a><br>
+<a href="threading.html">threading</a><br>
+</td><td class="multicolumn"><a href="time.html">time</a><br>
+</td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor functions-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Functions</strong></td></tr>
+    
+<tr><td class="decor functions-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt><a name="-generate_spawn_events"><strong>generate_spawn_events</strong></a>(network, num_events)</dt><dd><span class="code">Generate&nbsp;a&nbsp;deterministic&nbsp;list&nbsp;of&nbsp;car&nbsp;spawn&nbsp;events.<br>
+&nbsp;<br>
+Each&nbsp;event&nbsp;contains:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(start_node_id,&nbsp;start_road_id,&nbsp;end_node_id)<br>
+&nbsp;<br>
+The&nbsp;randomness&nbsp;is&nbsp;controlled&nbsp;using&nbsp;RANDOM_SEED&nbsp;so&nbsp;that&nbsp;the&nbsp;spawn&nbsp;pattern<br>
+is&nbsp;reproducible&nbsp;across&nbsp;runs.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+network&nbsp;:&nbsp;Network<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Network&nbsp;instance&nbsp;from&nbsp;which&nbsp;spawn&nbsp;nodes&nbsp;are&nbsp;taken.<br>
+num_events&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Number&nbsp;of&nbsp;spawn&nbsp;events&nbsp;(cars)&nbsp;to&nbsp;generate.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+list[tuple[int,&nbsp;int,&nbsp;int]]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;List&nbsp;of&nbsp;(start_node_id,&nbsp;start_road_id,&nbsp;end_node_id).</span></dd></dl>
+ <dl><dt>async <a name="-run_all_combinations"><strong>run_all_combinations</strong></a>()</dt><dd><span class="code">Run&nbsp;simulations&nbsp;for&nbsp;multiple&nbsp;(travel_weight,&nbsp;capacity_weight)&nbsp;combinations.<br>
+&nbsp;<br>
+For&nbsp;each&nbsp;`weight`&nbsp;in&nbsp;[0.1,&nbsp;0.2,&nbsp;...,&nbsp;0.9],&nbsp;this&nbsp;function&nbsp;sets:<br>
+&nbsp;&nbsp;travel_weight&nbsp;=&nbsp;1&nbsp;-&nbsp;weight<br>
+&nbsp;&nbsp;capacity_weight&nbsp;=&nbsp;weight<br>
+&nbsp;<br>
+It&nbsp;then:<br>
+&nbsp;&nbsp;-&nbsp;Calls&nbsp;`<a href="#-simulation">simulation</a>(...)`.<br>
+&nbsp;&nbsp;-&nbsp;Stores&nbsp;the&nbsp;returned&nbsp;metrics&nbsp;in&nbsp;`all_results`.<br>
+&nbsp;&nbsp;-&nbsp;Saves&nbsp;a&nbsp;combined&nbsp;JSON&nbsp;file&nbsp;with&nbsp;all&nbsp;runs.</span></dd></dl>
+ <dl><dt>async <a name="-simulation"><strong>simulation</strong></a>(travel_weight, capacity_weight)</dt><dd><span class="code">Run&nbsp;a&nbsp;single&nbsp;simulation&nbsp;with&nbsp;the&nbsp;given&nbsp;routing&nbsp;weights.<br>
+&nbsp;<br>
+The&nbsp;simulation:<br>
+&nbsp;&nbsp;-&nbsp;Creates&nbsp;a&nbsp;network&nbsp;and&nbsp;starts&nbsp;all&nbsp;traffic&nbsp;lights.<br>
+&nbsp;&nbsp;-&nbsp;Pre-generates&nbsp;a&nbsp;set&nbsp;of&nbsp;car&nbsp;spawn&nbsp;events&nbsp;using&nbsp;`generate_spawn_events`.<br>
+&nbsp;&nbsp;-&nbsp;Spawns&nbsp;NUM_CARS&nbsp;CarAgent&nbsp;instances&nbsp;with&nbsp;the&nbsp;given&nbsp;weights.<br>
+&nbsp;&nbsp;-&nbsp;Waits&nbsp;until&nbsp;all&nbsp;active&nbsp;cars&nbsp;finish.<br>
+&nbsp;&nbsp;-&nbsp;Stops&nbsp;all&nbsp;traffic&nbsp;light&nbsp;agents.<br>
+&nbsp;&nbsp;-&nbsp;Collects&nbsp;and&nbsp;saves&nbsp;metrics&nbsp;for&nbsp;every&nbsp;car&nbsp;and&nbsp;the&nbsp;total&nbsp;simulation&nbsp;time.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+travel_weight&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Weight&nbsp;given&nbsp;to&nbsp;travel&nbsp;time&nbsp;in&nbsp;the&nbsp;agents'&nbsp;route&nbsp;choice.<br>
+capacity_weight&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Weight&nbsp;given&nbsp;to&nbsp;capacity&nbsp;in&nbsp;the&nbsp;agents'&nbsp;route&nbsp;choice.<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+dict<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Dictionary&nbsp;of&nbsp;collected&nbsp;metrics,&nbsp;including&nbsp;per-car&nbsp;metrics&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"total_simulation_duration".</span></dd></dl>
+ <dl><dt>async <a name="-stop_agents"><strong>stop_agents</strong></a>(agents)</dt><dd><span class="code">Gracefully&nbsp;stop&nbsp;all&nbsp;SPADE&nbsp;agents&nbsp;in&nbsp;the&nbsp;given&nbsp;iterable.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+agents&nbsp;:&nbsp;iterable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Iterable&nbsp;of&nbsp;SPADE&nbsp;agent&nbsp;instances&nbsp;whose&nbsp;`stop()`&nbsp;coroutine<br>
+&nbsp;&nbsp;&nbsp;&nbsp;will&nbsp;be&nbsp;awaited.</span></dd></dl>
+</td></tr></table><p>
+<table class="section">
+<tr class="decor data-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Data</strong></td></tr>
+    
+<tr><td class="decor data-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><strong>CLEAR_INTERSECTION_TIME</strong> = 0.3<br>
+<strong>GREEN_LIGHT_MAX_TIME</strong> = 4<br>
+<strong>GREEN_LIGHT_MIN_TIME</strong> = 1<br>
+<strong>GRID</strong> = 2<br>
+<strong>MOVEMENT_TIMER</strong> = 0.1<br>
+<strong>NUM_CARS</strong> = 1200<br>
+<strong>N_LANES</strong> = 2<br>
+<strong>RANDOM_SEED</strong> = 42<br>
+<strong>RESULTS_FOLDER</strong> = 'simulation_results'<br>
+<strong>ROAD_CAPACITY</strong> = 25<br>
+<strong>SPAWN_TIMER</strong> = 0.2<br>
+<strong>YELLOW_LIGHT_TIME</strong> = 0.3</td></tr></table>
+</body></html>

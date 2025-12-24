@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module simulation</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">simulation</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cuser%5Conedrive%5Cdocumentos%5Ctraffic%5Csimulation.py">c:\users\user\onedrive\documentos\traffic\simulation.py</a></td></tr></table>
+    <p><span class="code">Main&nbsp;simulation&nbsp;script&nbsp;for&nbsp;the&nbsp;multi-agent&nbsp;traffic&nbsp;management&nbsp;system.<br>
+&nbsp;<br>
+This&nbsp;module:<br>
+&nbsp;&nbsp;-&nbsp;Builds&nbsp;the&nbsp;road&nbsp;network.<br>
+&nbsp;&nbsp;-&nbsp;Creates&nbsp;and&nbsp;starts&nbsp;all&nbsp;TrafficLightAgent&nbsp;instances.<br>
+&nbsp;&nbsp;-&nbsp;Spawns&nbsp;CarAgent&nbsp;and&nbsp;PriorityAgent&nbsp;agents&nbsp;at&nbsp;regular&nbsp;intervals.<br>
+&nbsp;&nbsp;-&nbsp;Launches&nbsp;the&nbsp;Pygame&nbsp;visualization&nbsp;interface&nbsp;in&nbsp;a&nbsp;separate&nbsp;thread.</span></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="asyncio.html">asyncio</a><br>
+<a href="interface.html">interface</a><br>
+</td><td class="multicolumn"><a href="random.html">random</a><br>
+<a href="threading.html">threading</a><br>
+</td><td class="multicolumn"><a href="traceback.html">traceback</a><br>
+</td><td class="multicolumn"></td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor functions-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Functions</strong></td></tr>
+    
+<tr><td class="decor functions-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt>async <a name="-simulation"><strong>simulation</strong></a>()</dt><dd><span class="code">Main&nbsp;simulation&nbsp;coroutine.<br>
+&nbsp;<br>
+Responsibilities<br>
+----------------<br>
+-&nbsp;Create&nbsp;the&nbsp;road&nbsp;network.<br>
+-&nbsp;Start&nbsp;one&nbsp;TrafficLightAgent&nbsp;per&nbsp;road&nbsp;and&nbsp;group&nbsp;them&nbsp;by&nbsp;intersection.<br>
+-&nbsp;Select&nbsp;an&nbsp;initial&nbsp;green&nbsp;light&nbsp;for&nbsp;each&nbsp;intersection.<br>
+-&nbsp;Continuously&nbsp;spawn&nbsp;CarAgent&nbsp;and&nbsp;PriorityAgent&nbsp;instances.<br>
+-&nbsp;Launch&nbsp;the&nbsp;visualization&nbsp;interface&nbsp;in&nbsp;a&nbsp;separate&nbsp;thread.</span></dd></dl>
+ <dl><dt>async <a name="-stop_agents"><strong>stop_agents</strong></a>(agents)</dt><dd><span class="code">Gracefully&nbsp;stop&nbsp;all&nbsp;given&nbsp;SPADE&nbsp;agents.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+agents&nbsp;:&nbsp;iterable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Iterable&nbsp;of&nbsp;agent&nbsp;instances&nbsp;whose&nbsp;`stop()`&nbsp;coroutine&nbsp;will&nbsp;be&nbsp;awaited.</span></dd></dl>
+</td></tr></table><p>
+<table class="section">
+<tr class="decor data-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Data</strong></td></tr>
+    
+<tr><td class="decor data-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><strong>CAPACITY_WEIGHT</strong> = 0.5<br>
+<strong>CLEAR_INTERSECTION_TIME</strong> = 0.3<br>
+<strong>GREEN_LIGHT_MAX_TIME</strong> = 4<br>
+<strong>GREEN_LIGHT_MIN_TIME</strong> = 1<br>
+<strong>GRID</strong> = 2<br>
+<strong>MOVEMENT_TIMER</strong> = 0.2<br>
+<strong>N_LANES</strong> = 2<br>
+<strong>ROAD_CAPACITY</strong> = 25<br>
+<strong>SPAWN_TIMER</strong> = 0.5<br>
+<strong>TRAVEL_WEIGHT</strong> = 0.5<br>
+<strong>YELLOW_LIGHT_TIME</strong> = 0.3</td></tr></table>
+</body></html>
